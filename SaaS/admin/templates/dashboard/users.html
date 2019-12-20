@@ -1,0 +1,45 @@
+{% extends "tpl/crud/list.html" %}
+{% from "tpl/macros.html" import render_actions %}
+
+
+{% block thead %}
+	<tr>
+		<th>ID</th>
+		<th>Username</th>
+		<th>Email</th>
+		<th>Status</th>
+		<th>Role</th>
+		<th>Created at</th>
+		<th>Actions</th>
+	</tr>
+{% endblock %}
+
+{% block tbody %}
+	<tr>
+		<td>{{ item.id }}</td>
+		<td>{{ item.username }}</td>
+		<td>{{ item.email }}</td>
+		<td>
+			{% if item.status.name.lower() == 'active' %}
+				<span class="badge badge-success">{{ item.status.name|capitalize }}</span>
+			{% elif item.status.name.lower() == 'inactive' %}
+				<span class="badge badge-warning">{{ item.status.name|capitalize }}</span>
+			{% else %}
+				<span class="badge badge-info">{{ item.status.name|capitalize }}</span>
+			{% endif %}
+		</td>
+		<td>
+			{% if item.role.name.lower() == 'owner' %}
+				<span class="badge badge-secondary">{{ item.role.name|capitalize }}</span>
+			{% elif item.role.name.lower() == 'admin' %}
+				<span class="badge badge-info">{{ item.role.name|capitalize }}</span>
+			{% else %}
+				<span class="badge badge-warning">{{ item.role.name|capitalize }}</span>
+			{% endif %}	
+		</td>
+		<td>{{ item.created }}</td>
+		<td>
+			{{ render_actions(url_for('admin.edit_user', uid=item.id), url_for('admin.delete_user', uid=item.id)) }}
+		</td>
+	</tr>
+{% endblock %}

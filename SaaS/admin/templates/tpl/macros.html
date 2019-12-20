@@ -1,0 +1,102 @@
+{% macro input(field, label=true) %}
+	<div class="form-group">
+		{% if label %}
+			{{ field.label }}
+		{% endif %}
+		
+		{% if field.errors %}
+			{{ field(class='form-control is-invalid', placeholder=field.name) }}
+
+			<div class="invalid-feedback">
+				{% for error in field.errors %}
+					<span>{{ error }}</span><br>
+				{% endfor %}
+			</div>
+		{% else %}
+			{{ field(class='form-control', placeholder=field.name) }}
+		{% endif %}
+	</div>
+{% endmacro %}
+
+
+{% macro datetime_input(field, label=true) %}
+	<div class="form-group">
+		{% if label %}
+			{{ field.label }}
+		{% endif %}
+		
+		{% if field.errors %}
+			{{ field(
+				class='form-control is-invalid datetimepicker-input',
+				data_toggle="datetimepicker",
+				id=("datetimepicker-"+field.name),
+				data_target=("#datetimepicker-"+field.name)
+			) }}
+
+			<div class="invalid-feedback">
+				{% for error in field.errors %}
+					<span>{{ error }}</span><br>
+				{% endfor %}
+			</div>
+		{% else %}
+			{{ field(
+				class='form-control datetimepicker-input',
+				data_toggle="datetimepicker",
+				id=("datetimepicker-"+field.name),
+				data_target=("#datetimepicker-"+field.name)
+			) }}
+		{% endif %}
+	</div>
+{% endmacro %}
+
+
+{% macro render(form, render_submit=true) %}
+	{% for field in form %}
+		{% if field.type in ['CSRFTokenField', 'HiddenField'] %}
+			{{ field() }}
+		{% elif field.type == 'SubmitField' %}
+			{% if render_submit %}
+				{{ field(class='btn btn-primary') }}
+			{% endif %}
+		{% elif field.type == 'DateTimeField' %}
+			{{ datetime_input(field) }}
+		{% else %}
+			{{ input(field) }}
+		{% endif %}
+	{% endfor %}
+{% endmacro %}
+
+
+{% macro paginate(pagination, class="") %}
+	{% if pagination.total > pagination.per_page %}
+		<ul class="pagination {{ class }}">
+			{% if pagination.has_prev %}
+				<li class="page-item"><a href="?page={{ pagination.prev_num }}" class="page-link">«</a></li>
+			{% else %}
+				<li class="page-item disabled"><a href="#" class="page-link">«</a></li>
+			{% endif %}
+
+			{% for page in pagination.iter_pages(left_edge=0, right_edge=0, left_current=2, right_current=3) %}
+				{% if page %}
+			    	{% if page == pagination.page %}
+			    		<li class="page-item active"><a href="?page={{ page }}" class="page-link">{{ page }}</a></li>
+			    	{% else %}
+			    		<li class="page-item"><a href="?page={{ page }}" class="page-link">{{ page }}</a></li>
+			    	{% endif %}
+			    {% endif %}
+			{% endfor %}
+
+			{% if pagination.has_next %}
+				<li class="page-item"><a href="?page={{ pagination.next_num }}" class="page-link">»</a></li>
+			{% else %}
+				<li class="page-item disabled"><a href="#" class="page-link">»</a></li>
+			{% endif %}
+		</ul>
+	{% endif %}
+{% endmacro %}
+
+{% macro render_actions(edit_route, delete_route) %}
+	<a href="{{ edit_route }}" class="btn btn-primary btn-sm"><i class="far fa-fw fa-edit"></i> Edit</a>
+	
+	<a href="{{ delete_route }}" class="btn btn-danger btn-sm deletable"><i class="far fa-fw fa-trash-alt"></i> Delete</a>
+{% endmacro %}

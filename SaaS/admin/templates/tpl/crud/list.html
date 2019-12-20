@@ -1,0 +1,54 @@
+{% extends "tpl/base.html" %}
+{% from "tpl/macros.html" import render, paginate %}
+
+
+{% block content %}
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title pt-1">All {{ crud_config['vocab'][0]|capitalize }}</h3>
+
+					<div class="card-tools">
+							<a href="{{ url_for(crud_config['add_item_route']) }}" class="btn btn-success btn-sm"><i class="fa fa-fw fa-plus"></i> Add {{ crud_config['vocab'][1]|capitalize }}</a>
+						<!--
+ 						<div class="input-group input-group-sm" style="width: 120px;">
+							<input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+							<div class="input-group-append">
+								<button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+							</div>
+						</div>
+						 -->
+					</div>
+				</div>
+				<!-- /.card-header -->
+				<div class="card-body table-responsive p-0">
+					<table class="table table-hover activate-delete-button">
+						<thead>
+							{% block thead %}
+							{% endblock %}
+						</thead>
+						<tbody>
+							{% for item in crud_config['pagination'].items %}
+								{% block tbody scoped %}
+								{% endblock %}
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<!-- /.card-body -->
+				<div class="row row pt-5 pl-3 pr-3">
+					<div class="col-sm-12 col-md-5">
+						<div>Pages {{ crud_config['pagination'].page }}/{{ crud_config['pagination'].pages }} ({{ crud_config['pagination'].total }} {{ crud_config['vocab'][0] }})
+						</div><br>
+					</div>
+					<div class="col-sm-12 col-md-7">
+						{{ paginate(crud_config['pagination'], class="float-right") }}
+					</div>
+				</div>
+			</div>
+			<!-- /.card -->
+		</div>
+	</div>
+{% endblock %}

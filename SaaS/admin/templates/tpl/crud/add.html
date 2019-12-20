@@ -1,0 +1,17 @@
+{% extends "tpl/base.html" %}
+{% from "tpl/macros.html" import render %}
+
+
+{% block content %}
+<form action="{{ url_for('admin.add_user') }}" method='POST'>
+	<div class="card">
+	  <h5 class="card-header">Create User</h5>
+	  <div class="card-body">
+		{{ render(form, render_submit=false) }}
+	  </div>
+	  <div class="card-footer">
+	  	{{ form.submit(class='btn btn-primary') }}
+	  </div>
+	</div>
+</form>
+{% endblock %}
